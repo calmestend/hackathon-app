@@ -1,6 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
-import { StyleSheet } from 'react-native';
+
+interface Coordinate {
+	latitude: number;
+	longitude: number;
+}
+
+interface StopPoint {
+	coordinate: Coordinate;
+	title: string;
+	stopId: string;
+}
+
+interface Route {
+	coordinates: Coordinate[];
+	type: 'walking' | 'bus';
+}
+
+interface Location {
+	latitude: number;
+	longitude: number;
+}
+
+interface LatLng {
+	lat: number;
+	lng: number;
+}
+
+interface Point {
+	latLng: LatLng;
+	title: string;
+}
 
 interface RouteMapViewProps {
 	mapRef: any;
@@ -10,11 +41,11 @@ interface RouteMapViewProps {
 		latitudeDelta: number;
 		longitudeDelta: number;
 	};
-	location: any;
-	pathCoordinates: any[];
-	stopPoints: any[];
-	origin: any;
-	destination: any;
+	location: Location;
+	pathCoordinates: Route[];
+	stopPoints: StopPoint[];
+	origin: Point | null;
+	destination: Point | null;
 }
 
 export const RouteMapView: React.FC<RouteMapViewProps> = ({
@@ -26,69 +57,57 @@ export const RouteMapView: React.FC<RouteMapViewProps> = ({
 	origin,
 	destination,
 }) => {
-	const [key, setKey] = useState(0);
-
-	useEffect(() => {
-		setKey(prev => prev + 1);
-	}, [pathCoordinates, stopPoints]);
 	return (
 		<MapView
-			key={key}
+			ref={mapRef}
 			style={styles.map}
 			initialRegion={initialRegion}
-			ref={mapRef}
 			showsUserLocation={true}
 			showsMyLocationButton={false}
 			toolbarEnabled={false}
 			showsCompass={false}
 		>
-			<Marker
-				coordinate={{
-					latitude: location.coords.latitude,
-					longitude: location.coords.longitude,
-				}}
-				title="Mi ubicación"
-			/>
-
 			{pathCoordinates.map((route, index) => (
 				<Polyline
 					key={index}
 					coordinates={route.coordinates}
-					strokeColor={route.type === 'walking' ? '#4CAF50' : '#2196F3'}
-					strokeWidth={route.type === 'walking' ? 3 : 4}
-					lineDashPattern={route.type === 'walking' ? [5, 5] : null}
+					strokeColor={route.type === 'walking' ? '#2196F3' : '#615EFC'}
+					strokeWidth={3}
 				/>
 			))}
 
-			{stopPoints.map((stop) => (
+			{stopPoints.map((stop, index) => (
 				<Marker
-					key={stop.stopId}
+					key={index}
 					coordinate={stop.coordinate}
 					title={stop.title}
-					pinColor="#4CAF50"
-				/>
+				>
+					<View style={styles.stopMarker} />
+				</Marker>
 			))}
 
 			{origin && (
 				<Marker
 					coordinate={{
 						latitude: origin.latLng.lat / 1e6,
-						longitude: origin.latLng.lng / 1e6
+						longitude: origin.latLng.lng / 1e6,
 					}}
 					title={origin.title}
-					pinColor="#FF5722"
-				/>
+				>
+					<View style={styles.originMarker} />
+				</Marker>
 			)}
 
 			{destination && (
 				<Marker
 					coordinate={{
 						latitude: destination.latLng.lat / 1e6,
-						longitude: destination.latLng.lng / 1e6
+						longitude: destination.latLng.lng / 1e6,
 					}}
 					title={destination.title}
-					pinColor="#9C27B0"
-				/>
+				>
+					<View style={styles.destinationMarker} />
+				</Marker>
 			)}
 		</MapView>
 	);
@@ -97,5 +116,29 @@ export const RouteMapView: React.FC<RouteMapViewProps> = ({
 const styles = StyleSheet.create({
 	map: {
 		flex: 1,
+	},
+	stopMarker: {
+		width: 12,
+		height: 12,
+		borderRadius: 6,
+		backgroundColor: '#615EFC',
+		borderWidth: 2,
+		borderColor: '#fff',
+	},
+	originMarker: {
+		width: 16,
+		height: 16,
+		borderRadius: 8,
+		backgroundColor: '#4CAF50',
+		borderWidth: 2,
+		borderColor: '#fff',
+	},
+	destinationMarker: {
+		width: 16,
+		height: 16,
+		borderRadius: 8,
+		backgroundColor: '#F44336',
+		borderWidth: 2,
+		borderColor: '#fff',
 	},
 });

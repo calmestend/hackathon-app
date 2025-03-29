@@ -281,38 +281,35 @@ export const MapDirections: React.FC = () => {
 						destination={destination}
 					/>
 
-					{!routeInfo && ( // Solo mostrar los inputs si NO hay ruta
-						<View style={styles.inputsContainer}>
-							<SearchInput
-								placeholder="Origen"
-								value={originQuery}
-								onChangeText={setOriginQuery}
-								onBlur={validateOrigin}
-								results={originResults}
-								onResultSelect={(item) => handleResultSelect(item, 'origin')}
-							/>
-							<SearchInput
-								placeholder="Destino"
-								value={destinationQuery}
-								onChangeText={setDestinationQuery}
-								results={destinationResults}
-								onResultSelect={(item) => handleResultSelect(item, 'destination')}
-							/>
-						</View>
-					)}
+					<View style={styles.inputsContainer}>
+						{showRouteInfo && routeInfo ? (
+							<RouteInfoWidget routeInfo={routeInfo} />
+						) : (
+							<>
+								<SearchInput
+									placeholder="Origen"
+									value={originQuery}
+									onChangeText={setOriginQuery}
+									onBlur={validateOrigin}
+									results={originResults}
+									onResultSelect={(item) => handleResultSelect(item, 'origin')}
+								/>
+								<SearchInput
+									placeholder="Destino"
+									value={destinationQuery}
+									onChangeText={setDestinationQuery}
+									results={destinationResults}
+									onResultSelect={(item) => handleResultSelect(item, 'destination')}
+								/>
+							</>
+						)}
+					</View>
 
 					{routeInfo && (
-						<>
-							{showRouteInfo && (
-								<View style={styles.inputsContainer}>
-									<RouteInfoWidget routeInfo={routeInfo} />
-								</View>
-							)}
-							<InfoButton
-								onPress={() => setShowRouteInfo(prev => !prev)}
-								isRouteCalculated={true}
-							/>
-						</>
+						<InfoButton
+							onPress={() => setShowRouteInfo(prev => !prev)}
+							isRouteCalculated={true}
+						/>
 					)}
 
 					{showConfirm && (
