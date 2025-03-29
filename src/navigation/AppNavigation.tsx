@@ -1,3 +1,5 @@
+import { ChatProvider } from '@contexts/chatContext';
+import { LocationProvider } from '@contexts/locationContext';
 import { NavigationContainer } from '@react-navigation/native';
 import {
 	createNativeStackNavigator,
@@ -13,22 +15,26 @@ export const AppNavigator: React.FC = () => {
 
 	return (
 		<NavigationContainer>
-			<StatusBar />
-			<Stack.Navigator
-				initialRouteName='Home'
-			>
-				<Stack.Screen
-					name="Home"
-					component={Home}
-				/>
-				<Stack.Screen
-					name="Settings" component={Settings}
-				/>
-				<Stack.Screen
-					name="MapDirections"
-					component={MapDirections}
-				/>
-			</Stack.Navigator>
+			<LocationProvider>
+				<ChatProvider>
+					<StatusBar />
+					<Stack.Navigator
+						initialRouteName='Home'
+					>
+						<Stack.Screen
+							name="Home"
+							component={Home}
+						/>
+						<Stack.Screen
+							name="Settings" component={Settings}
+						/>
+						<Stack.Screen
+							name="MapDirections"
+							component={MapDirections}
+						/>
+					</Stack.Navigator>
+				</ChatProvider>
+			</LocationProvider>
 		</NavigationContainer>
 	);
 
