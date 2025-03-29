@@ -13,8 +13,10 @@ export const MapDirections: React.FC = () => {
 				const lat = location.coords.latitude;
 				const lng = location.coords.longitude;
 
+				console.log(lat, lng)
+
 				try {
-					const res = await fetch('http://172.20.10.4:3000', {
+					const res = await fetch('http://172.20.10.4:3000/search', {
 						method: "POST",
 						headers: {
 							'Content-Type': 'application/json',
@@ -35,7 +37,7 @@ export const MapDirections: React.FC = () => {
 		};
 
 		fetchData();
-	}, [location]); // Add location as dependency to trigger fetch when location changes
+	}, [location]);
 
 	return (
 		<View style={{ flex: 1 }}>
